@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anup Giri | IT & Web Developer</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- Navigation Header -->
+    <header>
+        <nav class="navbar">
+            <div class="logo">&lt;AnupGiri<span> /&gt;</span></div>
+            <ul class="nav-links">
+                <li><a href="#about">About</a></li>
+                <li><a href="#skills">Tech Stack</a></li>
+                <li><a href="#app">Web App Showcase</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <button id="theme-toggle" class="theme-btn" aria-label="Toggle Dark Mode">
+                <i class="fa-solid fa-moon"></i>
+            </button>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <span class="badge"><i class="fa-solid fa-code"></i> IT & Software Developer</span>
+            <h1>Anup Giri</h1>
+            <p>Building responsive web applications, modern interfaces, and cloud-backed solutions with clean code.</p>
+            <div class="hero-btns">
+                <a href="#app" class="btn btn-primary"><i class="fa-solid fa-rocket"></i> Launch Web App</a>
+                <a href="#contact" class="btn btn-outline"><i class="fa-solid fa-paper-plane"></i> Contact Me</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="section">
+        <div class="container">
+            <h2 class="section-title">About Me</h2>
+            <p class="about-text">
+                I am an IT enthusiast and developer focused on building scalable frontend interfaces, efficient script automation, and full-stack integration using modern web technologies.
+            </p>
+            
+            <div class="info-cards">
+                <div class="info-card">
+                    <i class="fa-solid fa-location-dot icon"></i>
+                    <h3>Location</h3>
+                    <p>Ramrekha-01, Baglung</p>
+                </div>
+                <div class="info-card">
+                    <i class="fa-solid fa-phone icon"></i>
+                    <h3>Contact Number</h3>
+                    <p>+9779847681038</p>
+                </div>
+                <div class="info-card">
+                    <i class="fa-solid fa-laptop-code icon"></i>
+                    <h3>Focus Area</h3>
+                    <p>Full-Stack Web Development & Cloud Systems</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tech Stack Section -->
+    <section id="skills" class="section bg-alt">
+        <div class="container">
+            <h2 class="section-title">IT & Technical Stack</h2>
+            <p class="section-subtitle">Core technologies and tools I work with.</p>
+
+            <div class="skills-grid">
+                <div class="skill-card">
+                    <i class="fa-brands fa-html5 skill-icon"></i>
+                    <h3>Frontend Engineering</h3>
+                    <p>HTML5, CSS3, JavaScript (ES6+), Responsive Design & Modern UI Layouts</p>
+                </div>
+                <div class="skill-card">
+                    <i class="fa-brands fa-python skill-icon"></i>
+                    <h3>Backend & Scripting</h3>
+                    <p>Python, Node.js, RESTful APIs, Automation Scripts</p>
+                </div>
+                <div class="skill-card">
+                    <i class="fa-solid fa-database skill-icon"></i>
+                    <h3>Databases & Cloud</h3>
+                    <p>Firebase, Firestore Realtime Database, Authentication Systems</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Enhanced Interactive Web App -->
+    <section id="app" class="section">
+        <div class="container">
+            <h2 class="section-title">Interactive Development Hub</h2>
+            <p class="section-subtitle">A live task, goal, and project tracking app built with pure JavaScript.</p>
+            
+            <div class="app-card">
+                <!-- App Header Controls -->
+                <div class="app-controls">
+                    <div class="input-group">
+                        <input type="text" id="task-input" placeholder="Add a new project task or goal...">
+                        <button id="add-task-btn" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Add</button>
+                    </div>
+                    <div class="search-group">
+                        <input type="text" id="search-input" placeholder="Search tasks...">
+                    </div>
+                </div>
+
+                <!-- Stats Dashboard -->
+                <div class="task-stats">
+                    <span>Total Tasks: <strong id="total-count">0</strong></span>
+                    <span>Completed: <strong id="completed-count">0</strong></span>
+                    <button id="clear-completed-btn" class="btn-text">Clear Completed</button>
+                </div>
+
+                <!-- Task List Area -->
+                <ul id="task-list" class="task-list">
+                    <!-- Dynamic tasks will populate here -->
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="section bg-alt">
+        <div class="container">
+            <h2 class="section-title">Get In Touch</h2>
+            <div class="contact-wrapper">
+                <div class="contact-info">
+                    <h3>Contact Information</h3>
+                    <p><i class="fa-solid fa-user"></i> <strong>Name:</strong> Anup Giri</p>
+                    <p><i class="fa-solid fa-phone"></i> <strong>Phone:</strong> +9779847681038</p>
+                    <p><i class="fa-solid fa-location-dot"></i> <strong>Address:</strong> Ramrekha-01, Baglung</p>
+                    <p><i class="fa-solid fa-envelope"></i> <strong>Email:</strong> meanup12@gmail.com</p>
+                </div>
+
+                <!-- Direct Email Delivery via FormSubmit -->
+                <form action="https://formsubmit.co/meanup12@gmail.com" method="POST" class="contact-form">
+                    <input type="hidden" name="_captcha" value="false">
+                    <input type="hidden" name="_subject" value="New Portfolio Message for Anup Giri">
+                    
+                    <input type="text" name="name" placeholder="Your Name" required>
+                    <input type="email" name="email" placeholder="Your Email" required>
+                    <textarea name="message" rows="4" placeholder="Your Message" required></textarea>
+                    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-paper-plane"></i> Send Message</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 Anup Giri. All rights reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
