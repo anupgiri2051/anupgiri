@@ -88,3 +88,69 @@ document.addEventListener('DOMContentLoaded', () => {
         renderTasks(searchInput.value);
     });
 });
+// Connect Contact Form to Local Node.js Backend
+const contactForm = document.querySelector('.contact-form');
+
+if (contactForm) {
+    contactForm.addEventListener('submit', async (e) => {
+        e.preventDefault(); // Stop default browser page refresh
+
+        // Extract input values from form
+        const formData = {
+            name: contactForm.querySelector('input[name="name"]').value,
+            email: contactForm.querySelector('input[name="email"]').value,
+            message: contactForm.querySelector('textarea[name="message"]').value
+        };
+        try {
+            // Send POST request to express backend running on port 5000
+            const response = await fetch('http://localhost:5000/api/contact', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                alert('Message sent successfully! Check your inbox at meanup12@gmail.com.');
+                contactForm.reset();
+            } else {
+                alert('Error sending message: ' + result.error);
+            }
+        } catch (err) {
+            alert('Could not connect to the backend server. Make sure "node server.js" is running in your terminal.');
+        }
+    });
+}
+const contactForm = document.querySelector('.contact-form');
+
+if (contactForm) {
+    contactForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const formData = {
+            name: contactForm.querySelector('input[name="name"]').value,
+            email: contactForm.querySelector('input[name="email"]').value,
+            message: contactForm.querySelector('textarea[name="message"]').value
+        };
+
+        try {
+            const response = await fetch('http://localhost:5000/api/contact', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                alert('Success! Email sent to meanup12@gmail.com.');
+                contactForm.reset();
+            } else {
+                alert('Server Error: ' + result.error);
+            }
+        } catch (err) {
+            alert('Could not connect to server. Run "node server.js" in terminal.');
+        }
+    });
+}
