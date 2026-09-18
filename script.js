@@ -1,156 +1,103 @@
+// Replace this with your actual Render backend URL when live
+const API_BASE = 'https://anup-portfolio-backend.onrender.com/api';
+
 document.addEventListener('DOMContentLoaded', () => {
+    loadPortfolioContent();
 
-    // 1. Theme Toggle Logic
-    const themeBtn = document.getElementById('theme-toggle');
-    const themeIcon = themeBtn.querySelector('i');
+    const contactForm = document.getElementById('public-contact-form');
+    if (contactForm) {
+        contactForm.addEventListener('submit', handleContactSubmit);
+    }
+});
 
-    themeBtn.addEventListener('click', () => {
-        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-        if (isDark) {
-            document.documentElement.removeAttribute('data-theme');
-            themeIcon.className = 'fa-solid fa-moon';
-        } else {
-            document.documentElement.setAttribute('data-theme', 'dark');
-            themeIcon.className = 'fa-solid fa-sun';
-        }
-    });
+async function loadPortfolioContent() {
+    try {
+        const res = await fetch(`${API_BASE}/public/data`);
+        if (!res.ok) throw new Error("Failed to load portfolio content.");
+        
+        const data = await res.json();
+        renderPhotos(data.photos || []);
+        renderVlogs(data.vlogs || []);
+    } catch (err) {
+        console.error("Error loading content:", err);
+    }
+}
 
-    // 2. Interactive Web App (Task & Goal Tracker)
-    const taskInput = document.getElementById('task-input');
-    const addTaskBtn = document.getElementById('add-task-btn');
-    const searchInput = document.getElementById('search-input');
-    const taskList = document.getElementById('task-list');
-    const totalCount = document.getElementById('total-count');
-    const completedCount = document.getElementById('completed-count');
-    const clearCompletedBtn = document.getElementById('clear-completed-btn');
+function renderPhotos(photos) {
+    const grid = document.getElementById('public-photos-grid');
+    if (!grid) return;
 
-    let tasks = [];
+    if (!photos.length) {
+        grid.innerHTML = '<p>No photos uploaded yet.</p>';
+        return;
+    }
 
-    const updateStats = () => {
-        totalCount.textContent = tasks.length;
-        completedCount.textContent = tasks.filter(t => t.completed).length;
-    };
+    grid.innerHTML = photos.map(p => `
+        <div class="card photo-card" data-id="${p._id}">
+            <img src="${p.imageUrl}" alt="${p.title}" loading="lazy">
+            <div class="card-info">
+                <h3>${p.title}</h3>
+                <small>${p.date}</small>
+            </div>
+        </div>
+    `).join('');
+}
 
-    const renderTasks = (filterText = '') => {
-        taskList.innerHTML = '';
-        const filteredTasks = tasks.filter(task => 
-            task.text.toLowerCase().includes(filterText.toLowerCase())
-        );
+function renderVlogs(vlogs) {
+    const grid = document.getElementById('public-vlogs-grid');
+    if (!grid) return;
 
-        filteredTasks.forEach((task, index) => {
-            const li = document.createElement('li');
-            li.className = `task-item ${task.completed ? 'completed' : ''}`;
-            li.innerHTML = `
-                <span>${task.text}</span>
-                <div class="task-actions">
-                    <button class="action-check" title="Toggle Complete"><i class="fa-solid fa-circle-check"></i></button>
-                    <button class="action-delete" title="Delete Task"><i class="fa-solid fa-trash"></i></button>
-                </div>
-            `;
+    if (!vlogs.length) {
+        grid.innerHTML = '<p>No vlogs available yet.</p>';
+        return;
+    }
 
-            // Toggle completion
-            li.querySelector('.action-check').addEventListener('click', () => {
-                tasks[index].completed = !tasks[index].completed;
-                renderTasks(searchInput.value);
-            });
+    grid.innerHTML = vlogs.map(v => `
+        <div class="card vlog-card" data-id="${v._id}">
+            <div class="iframe-wrapper">
+                <iframe src="${v.videoUrl}" allowfullscreen></iframe>
+            </div>
+            <div class="card-info">
+                <h3>${v.title}</h3>
+                <p>${v.description || ''}</p>
+                <small>${v.date}</small>
+            </div>
+        </div>
+    `).join('');
+}
 
-            // Delete single task
-            li.querySelector('.action-delete').addEventListener('click', () => {
-                tasks.splice(index, 1);
-                renderTasks(searchInput.value);
-            });
+async function handleContactSubmit(e) {
+    e.preventDefault();
+    const statusMsg = document.getElementById('form-status');
+    const sendBtn = document.getElementById('send-btn');
 
-            taskList.appendChild(li);
+    const name = document.getElementById('contact-name').value;
+    const email = document.getElementById('contact-email').value;
+    const message = document.getElementById('contact-message').value;
+
+    statusMsg.innerText = "Sending message...";
+    statusMsg.style.color = "#333";
+    sendBtn.disabled = true;
+
+    try {
+        const res = await fetch(`${API_BASE}/contact`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, email, message })
         });
 
-        updateStats();
-    };
-
-    // Add new task
-    const addTask = () => {
-        const text = taskInput.value.trim();
-        if (!text) return;
-
-        tasks.push({ text, completed: false });
-        taskInput.value = '';
-        renderTasks(searchInput.value);
-    };
-
-    addTaskBtn.addEventListener('click', addTask);
-    taskInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') addTask(); });
-
-    // Live search filter
-    searchInput.addEventListener('input', (e) => renderTasks(e.target.value));
-
-    // Clear completed tasks
-    clearCompletedBtn.addEventListener('click', () => {
-        tasks = tasks.filter(t => !t.completed);
-        renderTasks(searchInput.value);
-    });
-});
-// Connect Contact Form to Local Node.js Backend
-const contactForm = document.querySelector('.contact-form');
-
-if (contactForm) {
-    contactForm.addEventListener('submit', async (e) => {
-        e.preventDefault(); // Stop default browser page refresh
-
-        // Extract input values from form
-        const formData = {
-            name: contactForm.querySelector('input[name="name"]').value,
-            email: contactForm.querySelector('input[name="email"]').value,
-            message: contactForm.querySelector('textarea[name="message"]').value
-        };
-        try {
-            // Send POST request to express backend running on port 5000
-            const response = await fetch('http://localhost:5000/api/contact', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData)
-            });
-
-            const result = await response.json();
-
-            if (response.ok) {
-                alert('Message sent successfully! Check your inbox at meanup12@gmail.com.');
-                contactForm.reset();
-            } else {
-                alert('Error sending message: ' + result.error);
-            }
-        } catch (err) {
-            alert('Could not connect to the backend server. Make sure "node server.js" is running in your terminal.');
+        const result = await res.json();
+        if (res.ok) {
+            statusMsg.innerText = result.message || "Message sent successfully!";
+            statusMsg.style.color = "green";
+            document.getElementById('public-contact-form').reset();
+        } else {
+            throw new Error(result.error || 'Failed to send message.');
         }
-    });
-}
-const contactForm = document.querySelector('.contact-form');
-
-if (contactForm) {
-    contactForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-
-        const formData = {
-            name: contactForm.querySelector('input[name="name"]').value,
-            email: contactForm.querySelector('input[name="email"]').value,
-            message: contactForm.querySelector('textarea[name="message"]').value
-        };
-
-        try {
-            const response = await fetch('http://localhost:5000/api/contact', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData)
-            });
-
-            const result = await response.json();
-
-            if (response.ok) {
-                alert('Success! Email sent to meanup12@gmail.com.');
-                contactForm.reset();
-            } else {
-                alert('Server Error: ' + result.error);
-            }
-        } catch (err) {
-            alert('Could not connect to server. Run "node server.js" in terminal.');
-        }
-    });
+    } catch (err) {
+        statusMsg.innerText = err.message || "Something went wrong. Try again.";
+        statusMsg.style.color = "red";
+    } finally {
+        sendBtn.disabled = false;
+    }
 }

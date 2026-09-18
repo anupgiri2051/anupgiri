@@ -3,72 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anup Giri | Web Developer</title>
+    <title>Anup Giri | Portfolio</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <header>
-        <nav class="navbar">
-            <div class="logo">&lt;AnupGiri<span> /&gt;</span></div>
-            <ul class="nav-links">
-                <li><a href="#about">About</a></li>
-                <li><a href="#skills">Tech Stack</a></li>
-                <li><a href="#contact">Contact</a></li>
-                <li><a href="admin.html" class="admin-link">Admin Panel</a></li>
-            </ul>
-            <button id="theme-toggle" class="theme-btn" aria-label="Toggle Dark Mode">
-                <i class="fa-solid fa-moon"></i>
-            </button>
+
+    <!-- Navigation -->
+    <header class="navbar">
+        <div class="logo">Anup Giri</div>
+        <nav>
+            <a href="#about">About</a>
+            <a href="#photos">Photos</a>
+            <a href="#vlogs">Vlogs</a>
+            <a href="#contact">Contact</a>
+            <a href="admin.html" class="admin-link">Admin Dashboard</a>
         </nav>
     </header>
 
-    <main>
-        <section id="about" class="hero">
-            <div class="hero-content">
-                <h1>Anup Giri</h1>
-                <p>Web Developer based in Baglung, Nepal.</p>
-                <a href="#contact" class="btn btn-primary">Get In Touch</a>
-            </div>
-        </section>
+    <!-- Hero Section -->
+    <section class="hero" id="about">
+        <h1>Hello, I'm <span>Anup Giri</span></h1>
+        <p>Web Developer & Creative Content Creator from Baglung, Nepal.</p>
+        <a href="#contact" class="btn btn-primary">Get In Touch</a>
+    </section>
 
-        <section id="skills" class="section bg-alt">
-            <div class="container">
-                <h2>Tech Stack</h2>
-                <div class="skills-grid">
-                    <div class="skill-card">
-                        <i class="fa-brands fa-html5 skill-icon"></i>
-                        <h3>Frontend</h3>
-                        <p>HTML5, CSS3, JavaScript (ES6+), Responsive Design</p>
-                    </div>
-                    <div class="skill-card">
-                        <i class="fa-brands fa-node-js skill-icon"></i>
-                        <h3>Backend</h3>
-                        <p>Node.js, Express.js, RESTful APIs, Nodemailer</p>
-                    </div>
-                    <div class="skill-card">
-                        <i class="fa-solid fa-database skill-icon"></i>
-                        <h3>Databases & Cloud</h3>
-                        <p>Firebase, Realtime Database, Cloudflare DNS</p>
-                    </div>
-                </div>
-            </div>
-        </section>
+    <!-- Photo Gallery Section -->
+    <section class="section" id="photos">
+        <h2 class="section-title">Photo Gallery</h2>
+        <div id="public-photos-grid" class="grid-container">
+            <p class="loading-text">Loading latest photo uploads...</p>
+        </div>
+    </section>
 
-        <section id="contact" class="section">
-            <div class="container">
-                <h2>Get In Touch</h2>
-                <p>Send me a direct message or feedback below.</p>
-                
-                <form class="contact-form">
-                    <input type="text" name="name" placeholder="Your Name" required>
-                    <input type="email" name="email" placeholder="Your Email" required>
-                    <textarea name="message" rows="5" placeholder="Your Message" required></textarea>
-                    <button type="submit" class="btn btn-primary">Send Message</button>
-                </form>
+    <!-- Vlog Gallery Section -->
+    <section class="section" id="vlogs">
+        <h2 class="section-title">Latest Vlogs</h2>
+        <div id="public-vlogs-grid" class="grid-container">
+            <p class="loading-text">Loading video content...</p>
+        </div>
+    </section>
+
+    <!-- Contact Form Section -->
+    <section class="section contact-section" id="contact">
+        <h2 class="section-title">Send Me a Message</h2>
+        <form id="public-contact-form" class="contact-form">
+            <div class="form-group">
+                <input type="text" id="contact-name" placeholder="Your Full Name" required>
             </div>
-        </section>
-    </main>
+            <div class="form-group">
+                <input type="email" id="contact-email" placeholder="Your Email Address" required>
+            </div>
+            <div class="form-group">
+                <textarea id="contact-message" rows="5" placeholder="Your Message..." required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary" id="send-btn">Send Message</button>
+            <p id="form-status" class="status-msg"></p>
+        </form>
+    </section>
 
     <footer>
         <p>&copy; 2026 Anup Giri. All rights reserved.</p>
