@@ -1,8 +1,9 @@
-// Replace this with your actual Render backend URL when live
-const API_BASE = 'https://anup-portfolio-backend.onrender.com/api';
+import { db } from './firebase-config.js';
+import { collection, addDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 document.addEventListener('DOMContentLoaded', () => {
-    loadPortfolioContent();
+    loadPhotos();
+    loadVlogs();
 
     const contactForm = document.getElementById('public-contact-form');
     if (contactForm) {
@@ -10,60 +11,54 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-async function loadPortfolioContent() {
-    try {
-        const res = await fetch(`${API_BASE}/public/data`);
-        if (!res.ok) throw new Error("Failed to load portfolio content.");
-        
-        const data = await res.json();
-        renderPhotos(data.photos || []);
-        renderVlogs(data.vlogs || []);
-    } catch (err) {
-        console.error("Error loading content:", err);
-    }
-}
-
-function renderPhotos(photos) {
+function loadPhotos() {
     const grid = document.getElementById('public-photos-grid');
-    if (!grid) return;
+    const q = query(collection(db, "photos"), orderBy("createdAt", "desc"));
 
-    if (!photos.length) {
-        grid.innerHTML = '<p>No photos uploaded yet.</p>';
-        return;
-    }
+    onSnapshot(q, (snapshot) => {
+        if (snapshot.empty) {
+            grid.innerHTML = '<p>No photos uploaded yet.</p>';
+            return;
+        }
 
-    grid.innerHTML = photos.map(p => `
-        <div class="card photo-card" data-id="${p._id}">
-            <img src="${p.imageUrl}" alt="${p.title}" loading="lazy">
-            <div class="card-info">
-                <h3>${p.title}</h3>
-                <small>${p.date}</small>
-            </div>
-        </div>
-    `).join('');
+        grid.innerHTML = snapshot.docs.map(doc => {
+            const data = doc.data();
+            return `
+                <div class="glass-card">
+                    <img src="${data.imageUrl}" alt="${data.title}" style="width:100%; height:180px; object-fit:cover; border-radius:8px;">
+                    <div style="padding-top:10px;">
+                        <h3>${data.title}</h3>
+                        <small style="color:#94a3b8;">${data.date}</small>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    });
 }
 
-function renderVlogs(vlogs) {
+function loadVlogs() {
     const grid = document.getElementById('public-vlogs-grid');
-    if (!grid) return;
+    const q = query(collection(db, "vlogs"), orderBy("createdAt", "desc"));
 
-    if (!vlogs.length) {
-        grid.innerHTML = '<p>No vlogs available yet.</p>';
-        return;
-    }
+    onSnapshot(q, (snapshot) => {
+        if (snapshot.empty) {
+            grid.innerHTML = '<p>No vlogs posted yet.</p>';
+            return;
+        }
 
-    grid.innerHTML = vlogs.map(v => `
-        <div class="card vlog-card" data-id="${v._id}">
-            <div class="iframe-wrapper">
-                <iframe src="${v.videoUrl}" allowfullscreen></iframe>
-            </div>
-            <div class="card-info">
-                <h3>${v.title}</h3>
-                <p>${v.description || ''}</p>
-                <small>${v.date}</small>
-            </div>
-        </div>
-    `).join('');
+        grid.innerHTML = snapshot.docs.map(doc => {
+            const data = doc.data();
+            return `
+                <div class="glass-card">
+                    <iframe src="${data.videoUrl}" style="width:100%; height:180px; border:none; border-radius:8px;" allowfullscreen></iframe>
+                    <div style="padding-top:10px;">
+                        <h3>${data.title}</h3>
+                        <p style="color:#94a3b8; font-size:0.9rem;">${data.description || ''}</p>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    });
 }
 
 async function handleContactSubmit(e) {
@@ -76,27 +71,21 @@ async function handleContactSubmit(e) {
     const message = document.getElementById('contact-message').value;
 
     statusMsg.innerText = "Sending message...";
-    statusMsg.style.color = "#333";
     sendBtn.disabled = true;
 
     try {
-        const res = await fetch(`${API_BASE}/contact`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, email, message })
+        await addDoc(collection(db, "messages"), {
+            name, email, message,
+            date: new Date().toLocaleString(),
+            createdAt: Date.now()
         });
 
-        const result = await res.json();
-        if (res.ok) {
-            statusMsg.innerText = result.message || "Message sent successfully!";
-            statusMsg.style.color = "green";
-            document.getElementById('public-contact-form').reset();
-        } else {
-            throw new Error(result.error || 'Failed to send message.');
-        }
+        statusMsg.innerText = "Message sent successfully!";
+        statusMsg.style.color = "#4ade80";
+        document.getElementById('public-contact-form').reset();
     } catch (err) {
-        statusMsg.innerText = err.message || "Something went wrong. Try again.";
-        statusMsg.style.color = "red";
+        statusMsg.innerText = "Error sending message. Try again.";
+        statusMsg.style.color = "#f87171";
     } finally {
         sendBtn.disabled = false;
     }
